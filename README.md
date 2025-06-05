@@ -8,9 +8,9 @@ Please follow the [KB Vagrant Development Environment guide](https://kiwibank.at
 
 ## Quick Start
 
-### Step 1: Clone the project to OneDrive
+### Step 1: Copy the project to OneDrive
 ```powershell
-git clone https://github.com/BenAtKiwibank/risk_rangers_vagrant.git "$env:OneDrive\VM-Personal-Provisioning"
+Copy-Item -Path "${VM-Personal-Provisioning-original}" -Destination "$env:OneDrive\VM-Personal-Provisioning" -Recurse
 ```
 
 ### Step 2: Configure Azure DevOps PAT
