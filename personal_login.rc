@@ -1,0 +1,10 @@
+PATH="$PATH:$HOME/vm-personal-provisioning/utils"
+PATH="$PATH:$HOME/.dotnet/tools"
+
+alias repos='cd $HOME/Repos'
+alias deductionnotice='cd $HOME/Repos/kb-deduction-notices-api'
+alias pepss='cd $HOME/Repos/kb-rcer-pepss-api'
+
+for file in "$HOME/vm-personal-provisioning/utils"/*.sh; do
+    [ -r "$file" ] && source "$file"
+done

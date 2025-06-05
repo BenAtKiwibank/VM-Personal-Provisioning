@@ -1,0 +1,20 @@
+[profile ciptooling-prod]
+sso_session = ciptooling-prod-session
+sso_account_id = 778173892410
+sso_role_name = CIPToolUser_pekaraurakauapis
+region = ap-southeast-2
+output = json
+[sso-session ciptooling-prod-session]
+sso_start_url = https://kiwibank.awsapps.com/start/#/
+sso_region = ap-southeast-2
+sso_registration_scopes = sso:account:access
+[profile cip-nonprod]
+sso_session = cip-nonprod-session
+sso_account_id = 041371538652
+sso_role_name = CIPUser_pekaraurakauapis
+region = ap-southeast-2
+output = json
+[sso-session cip-nonprod-session]
+sso_start_url = https://kiwibank.awsapps.com/start/#/
+sso_region = ap-southeast-2
+sso_registration_scopes = sso:account:access
