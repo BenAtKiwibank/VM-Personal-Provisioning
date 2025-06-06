@@ -12,6 +12,9 @@ export REPOS=$HOME/Repos
 
 find $PROVISIONING_DIR -name "*.sh" -type f -exec chmod +x {} \;
 
+# trun off swap to save disk space
+sudo swapoff -a
+
 # configure aws
 mkdir -p $HOME/.aws
 cp $PROVISIONING_DIR/aws-config  $HOME/.aws/config
