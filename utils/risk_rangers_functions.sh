@@ -38,20 +38,49 @@ function login_aws() {
 # configure_azure_devops_pat - Configures Azure DevOps Personal Access Token
 #
 # Usage:
-#   configure_azure_devops_pat
+#   configure_azure_devops_pat [-f|--force]
+#
+# Parameters:
+#   -f, --force: Optional. Force update of PAT even if already configured
 #
 # Description:
 #   This function checks if AZURE_DEVOPS_EXT_PAT is set and prompts the user
-#   to enter it if not configured. It saves the PAT to the environment file
-#   and sets it for the current session.
+#   to enter it if not configured or if force update is requested. It saves 
+#   the PAT to the environment file and sets it for the current session.
 #
 # Returns:
-#   0 if PAT is configured successfully
-#   1 if configuration fails
+#   0 if PAT is configured successfully or already set
+#   1 if configuration fails or invalid arguments provided
 function configure_azure_devops_pat() {
-    # Check if AZURE_DEVOPS_EXT_PAT is set
-    if [ -z "${AZURE_DEVOPS_EXT_PAT}" ] || [ "${AZURE_DEVOPS_EXT_PAT}" = "ReplaceWithYourPAT" ]; then
-        echo "Azure DevOps Personal Access Token (PAT) is not configured."
+    local force_update=false
+    
+    # Parse command line arguments
+    while [[ $# -gt 0 ]]; do
+        case $1 in
+            -f|--force)
+                force_update=true
+                shift
+                ;;
+            *)
+                echo "Unknown option: $1"
+                echo "Usage: configure_azure_devops_pat [-f|--force]"
+                return 1
+                ;;
+        esac
+    done
+    
+    # Check if AZURE_DEVOPS_EXT_PAT is set and force update is not requested
+    if [ "$force_update" = false ] && [ -n "${AZURE_DEVOPS_EXT_PAT}" ] && [ "${AZURE_DEVOPS_EXT_PAT}" != "ReplaceWithYourPAT" ]; then
+        echo "Azure DevOps PAT is already configured. Use -f flag to force update."
+        return 0
+    fi
+    
+    if [ "$force_update" = true ] || [ -z "${AZURE_DEVOPS_EXT_PAT}" ] || [ "${AZURE_DEVOPS_EXT_PAT}" = "ReplaceWithYourPAT" ]; then
+        if [ "$force_update" = true ]; then
+            echo "Forcing update of Azure DevOps Personal Access Token (PAT)."
+        else
+            echo "Azure DevOps Personal Access Token (PAT) is not configured."
+        fi
         echo "Please enter your Azure DevOps PAT:"
         read -s pat_input
         
