@@ -35,6 +35,49 @@ function login_aws() {
     export CODEARTIFACT_AUTH_TOKEN="${auth_token}"
 }
 
+# configure_azure_devops_pat - Configures Azure DevOps Personal Access Token
+#
+# Usage:
+#   configure_azure_devops_pat
+#
+# Description:
+#   This function checks if AZURE_DEVOPS_EXT_PAT is set and prompts the user
+#   to enter it if not configured. It saves the PAT to the environment file
+#   and sets it for the current session.
+#
+# Returns:
+#   0 if PAT is configured successfully
+#   1 if configuration fails
+function configure_azure_devops_pat() {
+    # Check if AZURE_DEVOPS_EXT_PAT is set
+    if [ -z "${AZURE_DEVOPS_EXT_PAT}" ] || [ "${AZURE_DEVOPS_EXT_PAT}" = "ReplaceWithYourPAT" ]; then
+        echo "Azure DevOps Personal Access Token (PAT) is not configured."
+        echo "Please enter your Azure DevOps PAT:"
+        read -s pat_input
+        
+        if [ -z "$pat_input" ]; then
+            echo "Error: No PAT provided"
+            return 1
+        fi
+        
+        # Update the environment file
+        local env_file="/home/vagrant/vm-personal-provisioning/utils/risk_rangers_env.sh"
+        if [ -f "$env_file" ]; then
+            # Replace the existing line with the new PAT
+            sed -i "s/^export AZURE_DEVOPS_EXT_PAT=.*/export AZURE_DEVOPS_EXT_PAT=\"$pat_input\"/" "$env_file"
+            echo "PAT saved to $env_file"
+            
+            # Set the environment variable for current session
+            export AZURE_DEVOPS_EXT_PAT="$pat_input"
+        else
+            echo "Error: Environment file not found at $env_file"
+            return 1
+        fi
+    fi
+    
+    return 0
+}
+
 # new_branch - Creates a new git branch based on Azure DevOps work item
 #
 # Prerequisites:
@@ -73,9 +116,8 @@ function new_branch() {
         return 1
     fi
 
-    # Check if AZURE_DEVOPS_EXT_PAT is set
-    if [ -z "${AZURE_DEVOPS_EXT_PAT}" ] || [ "${AZURE_DEVOPS_EXT_PAT}" = "ReplaceWithYourPAT" ]; then
-        echo "Error: AZURE_DEVOPS_EXT_PAT environment variable must be set with a valid PAT"
+    # Configure Azure DevOps PAT if needed
+    if ! configure_azure_devops_pat; then
         return 1
     fi
 
@@ -167,5 +209,14 @@ function new_branch() {
     echo "Created and switched to branch: $branch_name"
 }
 
-export -f login_aws
-export -f new_branch
+# Make functions available in both bash and zsh
+if [ -n "$BASH_VERSION" ]; then
+    # Bash supports export -f
+    export -f login_aws
+    export -f configure_azure_devops_pat
+    export -f new_branch
+elif [ -n "$ZSH_VERSION" ]; then
+    # Zsh doesn't need export -f, functions are automatically available
+    # when sourced in subshells if defined in .zshrc
+    :
+fi

@@ -5,6 +5,9 @@ alias repos='cd $HOME/Repos'
 alias deductionnotice='cd $HOME/Repos/kb-deduction-notices-api'
 alias pepss='cd $HOME/Repos/kb-rcer-pepss-api'
 
+export PROVISIONING_DIR=$HOME/vm-personal-provisioning
+export REPOS=$HOME/Repos
+
 for file in "$HOME/vm-personal-provisioning/utils"/*.sh; do
     [ -r "$file" ] && source "$file"
 done
