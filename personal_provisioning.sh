@@ -1,22 +1,36 @@
 #!/bin/bash
 
+set -o errexit
+set -o pipefail
+set -o nounset
+set -o xtrace
+
 echo "Setting up personal provisioning script..."
-source $HOME/.bashrc
 
 export PROVISIONING_DIR=$HOME/vm-personal-provisioning
 export REPOS=$HOME/Repos
 
 find $PROVISIONING_DIR -name "*.sh" -type f -exec chmod +x {} \;
 
+# configure aws
 mkdir -p $HOME/.aws
 cp $PROVISIONING_DIR/aws-config  $HOME/.aws/config
 chmod 600 $HOME/.aws/config
 
-# install tools
-cd $HOME
-dotnet tool install --global dotnet-ef
-pip install pre-commit
+# install/update tools
+sudo apt update && sudo apt upgrade -y
+if ! dpkg -l | grep -q python3; then
+    sudo apt install -y python3 python3-pip
+else
+    echo "Python3 is already installed"
+fi
+sudo apt autoremove -y
+sudo apt autoclean
 
+pip3 install pre-commit
+dotnet tool install --global dotnet-ef
+
+# initial repositories
 mkdir -p $REPOS
 git config --global core.longpaths true
 git config --global push.autoSetupRemote true
