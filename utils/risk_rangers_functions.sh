@@ -39,70 +39,43 @@ function login_aws() {
 # configure_azure_devops_pat - Configures Azure DevOps Personal Access Token
 #
 # Usage:
-#   configure_azure_devops_pat [-f|--force]
-#
-# Parameters:
-#   -f, --force: Optional. Force update of PAT even if already configured
+#   configure_azure_devops_pat
 #
 # Description:
 #   This function checks if AZURE_DEVOPS_EXT_PAT is set and prompts the user
-#   to enter it if not configured or if force update is requested. It saves 
-#   the PAT to the environment file and sets it for the current session.
+#   to enter it if not configured. It saves the PAT to the environment file
+#   and sets it for the current session.
 #
 # Returns:
 #   0 if PAT is configured successfully or already set
-#   1 if configuration fails or invalid arguments provided
+#   1 if configuration fails
 function configure_azure_devops_pat() {
-    local force_update=false
-    
-    # Parse command line arguments
-    while [[ $# -gt 0 ]]; do
-        case $1 in
-            -f|--force)
-                force_update=true
-                shift
-                ;;
-            *)
-                echo "Unknown option: $1"
-                echo "Usage: configure_azure_devops_pat [-f|--force]"
-                return 1
-                ;;
-        esac
-    done
-    
-    # Check if AZURE_DEVOPS_EXT_PAT is set and force update is not requested
-    if [ "$force_update" = false ] && [ -n "${AZURE_DEVOPS_EXT_PAT}" ] && [ "${AZURE_DEVOPS_EXT_PAT}" != "ReplaceWithYourPAT" ]; then
-        echo "Azure DevOps PAT is already configured. Use -f flag to force update."
+    # Check if AZURE_DEVOPS_EXT_PAT is set
+    if [ -n "${AZURE_DEVOPS_EXT_PAT}" ] && [ "${AZURE_DEVOPS_EXT_PAT}" != "ReplaceWithYourPAT" ]; then
         return 0
     fi
     
-    if [ "$force_update" = true ] || [ -z "${AZURE_DEVOPS_EXT_PAT}" ] || [ "${AZURE_DEVOPS_EXT_PAT}" = "ReplaceWithYourPAT" ]; then
-        if [ "$force_update" = true ]; then
-            echo "Forcing update of Azure DevOps Personal Access Token (PAT)."
-        else
-            echo "Azure DevOps Personal Access Token (PAT) is not configured."
-        fi
-        echo "Please enter your Azure DevOps PAT:"
-        read -s pat_input
+    echo "Azure DevOps Personal Access Token (PAT) is not configured."
+    echo "Please enter your Azure DevOps PAT:"
+    read -s pat_input
+    
+    if [ -z "$pat_input" ]; then
+        echo "Error: No PAT provided"
+        return 1
+    fi
+    
+    # Update the environment file
+    local env_file="/home/vagrant/vm-personal-provisioning/utils/risk_rangers_env.sh"
+    if [ -f "$env_file" ]; then
+        # Replace the existing line with the new PAT
+        sed -i "s/^export AZURE_DEVOPS_EXT_PAT=.*/export AZURE_DEVOPS_EXT_PAT=\"$pat_input\"/" "$env_file"
+        echo "PAT saved to $env_file"
         
-        if [ -z "$pat_input" ]; then
-            echo "Error: No PAT provided"
-            return 1
-        fi
-        
-        # Update the environment file
-        local env_file="/home/vagrant/vm-personal-provisioning/utils/risk_rangers_env.sh"
-        if [ -f "$env_file" ]; then
-            # Replace the existing line with the new PAT
-            sed -i "s/^export AZURE_DEVOPS_EXT_PAT=.*/export AZURE_DEVOPS_EXT_PAT=\"$pat_input\"/" "$env_file"
-            echo "PAT saved to $env_file"
-            
-            # Set the environment variable for current session
-            export AZURE_DEVOPS_EXT_PAT="$pat_input"
-        else
-            echo "Error: Environment file not found at $env_file"
-            return 1
-        fi
+        # Set the environment variable for current session
+        export AZURE_DEVOPS_EXT_PAT="$pat_input"
+    else
+        echo "Error: Environment file not found at $env_file"
+        return 1
     fi
     
     return 0
