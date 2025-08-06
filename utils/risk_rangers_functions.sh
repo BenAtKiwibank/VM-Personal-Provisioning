@@ -22,6 +22,7 @@ function login_aws() {
     if ! aws sts get-caller-identity --profile "cip-nonprod" >/dev/null 2>&1; then
         aws sso login --profile "cip-nonprod"
         aws eks update-kubeconfig --region ap-southeast-2 --name atanga --profile "cip-nonprod"
+        # changed the credsStore parameter in ~/.docker/config.json to osxkeychain if it throws errors
         aws ecr get-login-password --region ap-southeast-2 --profile "cip-nonprod" | docker login --username AWS --password-stdin 250300400957.dkr.ecr.ap-southeast-2.amazonaws.com
     fi
 
