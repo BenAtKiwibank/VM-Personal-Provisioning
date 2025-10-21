@@ -1,4 +1,4 @@
-#!/bin/bash
+﻿#!/bin/bash
 
 # login_aws - Handles AWS authentication and configuration
 #

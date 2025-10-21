@@ -1,4 +1,4 @@
-# Vagrant Personal Provisioning
+﻿# Vagrant Personal Provisioning
 
 Automation scripts for setting up development VMs with AWS SSO, development tools, and git workflow utilities.
 
