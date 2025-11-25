@@ -146,7 +146,7 @@ function new_branch() {
     fi
 
     # Configure Azure DevOps PAT if needed
-    if ! configure_azure_devops_pat; then
+    if ! configure_azure_devops_pat "$@"; then
         return 1
     fi
 
@@ -238,12 +238,31 @@ function new_branch() {
     echo "Created and switched to branch: $branch_name"
 }
 
+# rds_token - Generates an RDS authentication token for Atanga database
+#
+# Usage:
+#   rds_token
+#
+# Description:
+#   Generates an authentication token for connecting to the Atanga PostgreSQL
+#   RDS instance in the cip-nonprod environment. The token is displayed and
+#   exported as the PG_PASSWORD environment variable for database authentication.
+#
+# Returns:
+#   The authentication token string
+function rds_token() {
+    local token
+    token=$(aws rds generate-db-auth-token --hostname "atanga-postgres-instance.cii0zbi7rvwv.ap-southeast-2.rds.amazonaws.com" --port 5432 --region ap-southeast-2 --username "atanga_readonly" --profile "cip-nonprod")
+    echo "$token"
+}
+
 # Make functions available in both bash and zsh
 if [ -n "$BASH_VERSION" ]; then
     # Bash supports export -f
     export -f login_aws
     export -f configure_azure_devops_pat
     export -f new_branch
+    export -f rds_token
 elif [ -n "$ZSH_VERSION" ]; then
     # Zsh doesn't need export -f, functions are automatically available
     # when sourced in subshells if defined in .zshrc
