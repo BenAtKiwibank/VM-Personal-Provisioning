@@ -31,7 +31,10 @@ sudo apt autoremove -y
 sudo apt autoclean
 
 pip3 install pre-commit
-dotnet tool install --global dotnet-ef
+
+# Clear dotnet tool cache and install dotnet-ef
+dotnet nuget locals all --clear
+dotnet tool install --global dotnet-ef --version 9.0.0
 
 # initial repositories
 mkdir -p $REPOS
