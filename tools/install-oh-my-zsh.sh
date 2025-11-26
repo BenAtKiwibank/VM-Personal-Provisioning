@@ -9,7 +9,6 @@ if [ ! -d "$HOME/.oh-my-zsh" ]; then
     if [ -f "$ZSH_CONFIG_FILE" ]; then
         echo "Applying custom zsh configuration..."
         cat "$ZSH_CONFIG_FILE" >> ~/.zshrc
-        source ~/.zshrc
         echo "exec zsh" >> ~/.bashrc
         echo "Custom zsh configuration applied!"
     else
