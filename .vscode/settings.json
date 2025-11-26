@@ -1,0 +1,23 @@
+{
+  // Line ending configuration
+  "files.eol": "\n",
+  "files.insertFinalNewline": true,
+  "files.trimTrailingWhitespace": true,
+
+  // Encoding configuration - UTF-8 without BOM
+  "files.encoding": "utf8",
+  "files.autoGuessEncoding": false,
+
+  // Shell script specific settings
+  "[shellscript]": {
+    "files.eol": "\n",
+    "files.encoding": "utf8"
+  },
+
+  // Markdown specific settings
+  "[markdown]": {
+    "files.eol": "\n",
+    "files.encoding": "utf8",
+    "files.trimTrailingWhitespace": false
+  }
+}

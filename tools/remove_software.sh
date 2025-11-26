@@ -1,4 +1,4 @@
-﻿#!/bin/bash
+#!/bin/bash
 
 # Personal Software Removal Script
 # This script removes software that is not needed 

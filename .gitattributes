@@ -1,2 +1,19 @@
-# Force text files to use LF
-* text eol=lf
+# Auto-detect text files and normalize line endings to LF on checkin
+* text=auto eol=lf
+
+# Explicitly declare shell scripts as text files with LF (UTF-8 without BOM)
+*.sh text eol=lf working-tree-encoding=UTF-8
+*.bash text eol=lf working-tree-encoding=UTF-8
+
+# Explicitly declare other text files (UTF-8 without BOM)
+*.md text eol=lf working-tree-encoding=UTF-8
+*.rc text eol=lf working-tree-encoding=UTF-8
+*.content text eol=lf working-tree-encoding=UTF-8
+
+# Denote binary files
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.pdf binary
