@@ -45,7 +45,7 @@ function login_aws() {
 #
 # Description:
 #   This function checks if AZURE_DEVOPS_EXT_PAT is set and prompts the user
-#   to enter it if not configured or if force update is requested. It saves 
+#   to enter it if not configured or if force update is requested. It saves
 #   the PAT to the environment file and sets it for the current session.
 #
 # Returns:
@@ -53,7 +53,7 @@ function login_aws() {
 #   1 if configuration fails or invalid arguments provided
 function configure_azure_devops_pat() {
     local force_update=false
-    
+
     # Parse command line arguments
     while [[ $# -gt 0 ]]; do
         case $1 in
@@ -68,13 +68,13 @@ function configure_azure_devops_pat() {
                 ;;
         esac
     done
-    
+
     # Check if AZURE_DEVOPS_EXT_PAT is set and force update is not requested
     if [ "$force_update" = false ] && [ -n "${AZURE_DEVOPS_EXT_PAT}" ] && [ "${AZURE_DEVOPS_EXT_PAT}" != "ReplaceWithYourPAT" ]; then
         echo "Azure DevOps PAT is already configured. Use -f flag to force update."
         return 0
     fi
-    
+
     if [ "$force_update" = true ] || [ -z "${AZURE_DEVOPS_EXT_PAT}" ] || [ "${AZURE_DEVOPS_EXT_PAT}" = "ReplaceWithYourPAT" ]; then
         if [ "$force_update" = true ]; then
             echo "Forcing update of Azure DevOps Personal Access Token (PAT)."
@@ -83,19 +83,19 @@ function configure_azure_devops_pat() {
         fi
         echo "Please enter your Azure DevOps PAT:"
         read -s pat_input
-        
+
         if [ -z "$pat_input" ]; then
             echo "Error: No PAT provided"
             return 1
         fi
-        
+
         # Update the environment file
         local env_file="/home/vagrant/vm-personal-provisioning/utils/risk_rangers_env.sh"
         if [ -f "$env_file" ]; then
             # Replace the existing line with the new PAT
             sed -i "s/^export AZURE_DEVOPS_EXT_PAT=.*/export AZURE_DEVOPS_EXT_PAT=\"$pat_input\"/" "$env_file"
             echo "PAT saved to $env_file"
-            
+
             # Set the environment variable for current session
             export AZURE_DEVOPS_EXT_PAT="$pat_input"
         else
@@ -103,7 +103,7 @@ function configure_azure_devops_pat() {
             return 1
         fi
     fi
-    
+
     return 0
 }
 
@@ -141,12 +141,12 @@ function new_branch() {
     local number=$1
 
     if [ -z "$number" ]; then
-        echo "Usage: create_feature_branch <story-number>"
+        echo "Usage: new_branch <story-number> [branch-type]"
         return 1
     fi
 
-    # Configure Azure DevOps PAT if needed
-    if ! configure_azure_devops_pat "$@"; then
+    # Configure Azure DevOps PAT if needed (without passing branch arguments)
+    if ! configure_azure_devops_pat; then
         return 1
     fi
 
@@ -159,7 +159,7 @@ function new_branch() {
     # Get work item title from Azure DevOps API
     local title
     title=$(az boards work-item show --id "$number" --organization "https://dev.azure.com/Kiwibank" --query "fields" -o json | jq -r '."System.Title"')
-    
+
     if [ -z "$title" ]; then
         echo "Error: Could not fetch work item title from Azure DevOps"
         return 1
@@ -167,17 +167,17 @@ function new_branch() {
 
     # Convert special characters and spaces to dashes
     clean_title=$(echo "$title" | sed 's/[^[:alnum:]]/-/g' | tr -s '-' | sed 's/-$//')
-    
+
     # Create branch name
     # Set default branch type if not provided
     local branch_type=${2:-feature}
-    
+
     # Validate branch type
     case $branch_type in
         feature|bugfix|format|refactoring) ;;
         *) echo "Error: Invalid branch type. Use feature, bugfix, format, or refactoring"; return 1;;
     esac
-    
+
     branch_name="AB#${number}/${branch_type}-${clean_title}"
 
     # Check if branch already exists
@@ -234,7 +234,7 @@ function new_branch() {
             return 1
         fi
     fi
-    
+
     echo "Created and switched to branch: $branch_name"
 }
 
