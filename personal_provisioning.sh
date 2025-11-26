@@ -59,10 +59,12 @@ git clone git@github.com:Kiwibank/kb-tf-esp.git # Terraform module for ESP (Evne
 cd "$REPOS"/kb-deduction-notices-api
 pre-commit install
 pre-commit install --hook-type commit-msg 
+pre-commit install --hook-type pre-push
 
 cd "$REPOS"/kb-rcer-pepss-api
 pre-commit install
 pre-commit install --hook-type commit-msg
+pre-commit install --hook-type pre-push
 
 # install oh-my-zsh and apply custom configuration
 "$PROVISIONING_DIR"/tools/install-oh-my-zsh.sh
