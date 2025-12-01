@@ -15,10 +15,10 @@
 function fix_docker_credentials() {
     echo "Docker credentials storage error detected. Fixing configuration..."
     local docker_config="$HOME/.docker/config.json"
-    
+
     # Create .docker directory if it doesn't exist
     mkdir -p "$HOME/.docker"
-    
+
     # Fix the credsStore configuration
     if [ -f "$docker_config" ]; then
         # Remove credsStore or set it to osxkeychain depending on OS
@@ -33,7 +33,7 @@ function fix_docker_credentials() {
         # Create minimal config file
         echo '{}' > "$docker_config"
     fi
-    
+
     return 0
 }
 
@@ -55,18 +55,18 @@ function fix_docker_credentials() {
 function ecr_docker_login() {
     local profile=$1
     local registry=$2
-    
+
     if [ -z "$profile" ] || [ -z "$registry" ]; then
         echo "Usage: ecr_docker_login <profile> <registry-url>"
         return 1
     fi
-    
+
     # Attempt docker login and handle credentials storage error
     local docker_login_output
     if ! docker_login_output=$(aws ecr get-login-password --region ap-southeast-2 --profile "$profile" | docker login --username AWS --password-stdin "$registry" 2>&1); then
         if echo "$docker_login_output" | grep -q "error storing credentials"; then
             fix_docker_credentials
-            
+
             # Retry docker login
             echo "Retrying docker login..."
             aws ecr get-login-password --region ap-southeast-2 --profile "$profile" | docker login --username AWS --password-stdin "$registry"
@@ -75,7 +75,7 @@ function ecr_docker_login() {
             return 1
         fi
     fi
-    
+
     return 0
 }
 
@@ -130,6 +130,7 @@ function login_aws() {
 # Returns:
 #   0 if PAT is configured successfully or already set
 #   1 if configuration fails or invalid arguments provided
+# shellcheck disable=SC2120
 function configure_azure_devops_pat() {
     local force_update=false
 
@@ -168,19 +169,23 @@ function configure_azure_devops_pat() {
             return 1
         fi
 
-        # Update the environment file
-        local env_file="/home/vagrant/vm-personal-provisioning/utils/risk_rangers_env.sh"
-        if [ -f "$env_file" ]; then
-            # Replace the existing line with the new PAT
-            sed -i "s/^export AZURE_DEVOPS_EXT_PAT=.*/export AZURE_DEVOPS_EXT_PAT=\"$pat_input\"/" "$env_file"
-            echo "PAT saved to $env_file"
+        # Update the secure PAT file in home directory (not in git)
+        local pat_file="$HOME/.azure_devops_pat"
 
-            # Set the environment variable for current session
-            export AZURE_DEVOPS_EXT_PAT="$pat_input"
-        else
-            echo "Error: Environment file not found at $env_file"
-            return 1
-        fi
+        # Create the file with the PAT
+        cat > "$pat_file" << EOF
+#!/bin/bash
+# Sensitive Azure DevOps PAT - DO NOT COMMIT TO GIT
+export AZURE_DEVOPS_EXT_PAT="$pat_input"
+EOF
+
+        # Ensure the file has appropriate permissions (readable only by owner)
+        chmod 600 "$pat_file"
+
+        echo "PAT saved securely to $pat_file"
+
+        # Set the environment variable for current session
+        export AZURE_DEVOPS_EXT_PAT="$pat_input"
     fi
 
     return 0

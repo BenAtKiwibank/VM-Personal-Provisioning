@@ -1,0 +1,8 @@
+# Sensitive files - never commit
+.azure_devops_pat
+*.pat
+*_secrets.sh
+
+# Temporary files
+*.tmp
+*.bak
