@@ -36,6 +36,7 @@ pipx ensurepath
 export PATH="$HOME/.local/bin:$PATH"
 
 # Clear dotnet tool cache and install dotnet-ef
+sudo dotnet workload update
 dotnet nuget locals all --clear
 dotnet tool install --global dotnet-ef --version 9.0.0
 
