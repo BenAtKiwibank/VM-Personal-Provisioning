@@ -37,7 +37,7 @@ check_image_exists() {
         echo ""
         echo "$SHAREPOINT_URL"
         echo ""
-        echo "Save it as: $IMAGE_PATH"
+        echo "Save it to your Downloads folder as: $IMAGE_NAME"
         echo ""
         echo "Then run this script again."
         exit 1
@@ -45,40 +45,55 @@ check_image_exists() {
 
     IMAGE_SIZE=$(du -h "$IMAGE_PATH" | cut -f1)
     echo "Found WSL image: $IMAGE_NAME (Size: $IMAGE_SIZE)"
-}
 
-# Check if file was downloaded today
-check_file_version() {
-    local file_date today
-    file_date=$(date -r "$IMAGE_PATH" +%Y-%m-%d)
-    today=$(date +%Y-%m-%d)
+    # Check if file is older than 30 days
+    local file_age_days current_time file_time
+    current_time=$(date +%s)
+    file_time=$(date -r "$IMAGE_PATH" +%s)
+    file_age_days=$(( (current_time - file_time) / 86400 ))
 
-    if [ "$file_date" != "$today" ]; then
+    if [ "$file_age_days" -gt 30 ]; then
+        local file_date
+        file_date=$(date -r "$IMAGE_PATH" +%Y-%m-%d)
+
         echo ""
         echo "=========================================="
-        echo "FILE VERSION CHECK"
+        echo "IMAGE FILE IS OLD"
         echo "=========================================="
-        echo "Your downloaded file was created on: $file_date"
+        echo "Your image file was downloaded on: $file_date"
+        echo "This is $file_age_days days old."
         echo ""
-        echo "Please check SharePoint for the latest version:"
-        echo "$SHAREPOINT_URL"
+        echo "There might be a newer version available on SharePoint."
         echo ""
-        echo "If you want to download the latest version:"
-        echo "  1. Download from SharePoint"
-        echo "  2. Run this script again"
-        echo ""
-        read -r -p "Continue with current file? (yes/no): " continue_install
+        read -r -p "Would you like to download the latest version? (yes/no): " download_new
 
-        if [ "$continue_install" != "yes" ]; then
+        if [ "$download_new" = "yes" ]; then
+            # Backup old file with timestamp
+            local backup_name
+            backup_name="${IMAGE_PATH%.wsl}_backup_$(date +%Y%m%d_%H%M%S).wsl"
+
             echo ""
-            echo "Installation cancelled."
+            echo "Backing up old file to: $backup_name"
+            mv "$IMAGE_PATH" "$backup_name"
+
+            echo ""
+            echo "Please download the latest image from SharePoint:"
+            echo "$SHAREPOINT_URL"
+            echo ""
+            echo "Save it to your Downloads folder as: $IMAGE_NAME"
+            echo ""
+            echo "Then run this script again."
             exit 0
         fi
+
+        echo ""
+        echo "Continuing with existing file..."
     fi
 }
 
-# Check if any kb-ubuntu distribution already exists
-check_existing_installation() {
+# Confirm installation/upgrade with user
+# Confirm installation/upgrade with user
+confirm_installation() {
     echo ""
     echo "Current WSL distributions:"
     wsl.exe --list --verbose
@@ -86,26 +101,32 @@ check_existing_installation() {
     local existing_distro
     existing_distro=$(get_kb_distro)
 
+    echo ""
+    echo "=========================================="
     if [ -n "$existing_distro" ]; then
-        echo ""
+        echo "UPGRADE CONFIRMATION"
         echo "=========================================="
-        echo "EXISTING INSTALLATION DETECTED"
-        echo "=========================================="
-        echo "Distribution '$existing_distro' already exists."
+        echo "Existing installation: $existing_distro"
         echo ""
-        echo "WARNING: Continuing will install a new instance."
-        echo "You will LOSE ALL UNSAVED WORK in the existing instance."
+        echo "WARNING: The new installation will overwrite the existing one."
+        echo "You will LOSE ALL UNSAVED WORK in WSL."
         echo "All files not in OneDrive or Git will be lost."
         echo ""
         echo "Make sure you have committed and pushed all your code!"
+    else
+        echo "INSTALLATION CONFIRMATION"
+        echo "=========================================="
+        echo "No existing KB Ubuntu installation found."
         echo ""
-        read -r -p "Type 'yes' to continue: " confirmation
+        echo "Ready to install new WSL distribution."
+    fi
+    echo ""
+    read -r -p "Continue with installation? (yes/no): " confirmation
 
-        if [ "$confirmation" != "yes" ]; then
-            echo ""
-            echo "Installation cancelled."
-            exit 0
-        fi
+    if [ "$confirmation" != "yes" ]; then
+        echo ""
+        echo "Installation cancelled."
+        exit 0
     fi
 }
 
@@ -170,8 +191,7 @@ main() {
 
     check_running_environment
     check_image_exists
-    check_file_version
-    check_existing_installation
+    confirm_installation
     install_wsl_distribution
     finalize_setup
 }
