@@ -25,15 +25,15 @@ chmod 600 "$HOME"/.aws/config
 
 # install/update tools
 sudo apt update && sudo apt upgrade -y
-if ! dpkg -l | grep -q python3; then
-    sudo apt install -y python3 python3-pip
-else
-    echo "Python3 is already installed"
-fi
 sudo apt autoremove -y
 sudo apt autoclean
 
-pip3 install pre-commit
+# Install pre-commit using pipx (recommended for Python CLI tools)
+sudo apt install -y pipx
+pipx install pre-commit
+pipx ensurepath
+# Add pipx binaries to PATH for the current session
+export PATH="$HOME/.local/bin:$PATH"
 
 # Clear dotnet tool cache and install dotnet-ef
 dotnet nuget locals all --clear
@@ -58,7 +58,7 @@ git clone git@github.com:Kiwibank/kb-tf-esp.git # Terraform module for ESP (Evne
 # pre-install pre-commit hooks
 cd "$REPOS"/kb-deduction-notices-api
 python3 -m pre_commit install
-python3 -m pre_commit install --hook-type commit-msg 
+python3 -m pre_commit install --hook-type commit-msg
 python3 -m pre_commit install --hook-type pre-push
 
 cd "$REPOS"/kb-rcer-pepss-api
