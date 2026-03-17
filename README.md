@@ -2,6 +2,49 @@
 
 Automation scripts for setting up the KB Ubuntu WSL development environment with AWS SSO, development tools, and git workflow utilities.
 
+## Prerequisites
+
+Before running the setup script, ensure you have:
+
+1. **Windows 10 (version 2004 or higher) or Windows 11**
+   - WSL 2 must be installed and configured
+   - To install WSL 2, run in PowerShell as Administrator:
+     ```powershell
+     wsl --install
+     ```
+   - Set WSL 2 as default:
+     ```powershell
+     wsl --set-default-version 2
+     ```
+
+2. **Git Bash for Windows**
+   - Download from KB software centre
+
+3. **Access to Kiwibank SharePoint**
+   - Required to download the WSL image
+
+4. **GitHub SSH Keys**
+   - Must be configured for your GitHub account
+   - Required for automatic repository cloning during provisioning
+   
+   Generate SSH key:
+   ```bash
+   ssh-keygen -t ed25519 -C "<YOUR_EMAIL>" -f ~/.ssh/id_ed25519 -N ''
+   cat ~/.ssh/id_ed25519.pub
+   ```
+   
+   Then:
+   - Copy the public key output
+   - Go to GitHub Settings → SSH and GPG keys → New SSH key
+   - Paste your key and save
+   - **Important:** Authorize the key for Kiwibank organization access
+   
+   Guide: https://docs.github.com/en/authentication/connecting-to-github-with-ssh
+
+5. **Azure DevOps PAT** (Optional)
+   - Required for git workflow utilities
+   - Configure in `utils/risk_rangers_env.sh` after installation
+
 ## Quick Start
 
 1. **Clone this repository** to your OneDrive:
@@ -40,3 +83,11 @@ After installation:
 - AWS SSO configured profiles
 - Development tools (Oh My Zsh, Python, Node, etc.)
 - Git workflow utilities
+
+## Repository Structure
+
+- `get-latest-wsl.sh` - Main entry point for WSL installation/upgrade
+- `personal_provisioning.sh` - Auto-runs on first login to set up development environment
+- `tools/` - Installation and configuration scripts
+- `utils/` - Common utility functions and environment configurations
+- `aws-config` - AWS SSO profile configuration
