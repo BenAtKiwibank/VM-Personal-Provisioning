@@ -48,6 +48,7 @@ git config --global push.autoSetupRemote true
 cd "$REPOS"
 git clone git@github.com:Kiwibank/kb-deduction-notices-api.git
 git clone git@github.com:Kiwibank/kb-rcer-pepss-api.git
+git clone git@github.com:Kiwibank/kb-party-api.git
 
 # infrasturucture repositories
 mkdir -p "$REPOS"/infrastructure
@@ -66,6 +67,9 @@ cd "$REPOS"/kb-rcer-pepss-api
 pre-commit install
 pre-commit install --hook-type commit-msg
 pre-commit install --hook-type pre-push
+
+cd "$REPOS"/kb-party-api
+pre-commit install --hook-type commit-msg
 
 # install oh-my-zsh and apply custom configuration
 "$PROVISIONING_DIR"/tools/install-oh-my-zsh.sh
