@@ -22,6 +22,17 @@ Automation scripts for setting up the KB Ubuntu WSL development environment with
 
 **Important:** Run this from Git Bash on Windows, not from within WSL.
 
+## How It Works
+
+The setup script will:
+
+1. **Check for WSL image** - Looks for `kb-ubuntu.wsl` in your Downloads folder
+2. **Verify age** - If the image is older than 30 days, offers to backup and prompts you to download the latest version
+3. **Show existing installations** - Lists any current KB Ubuntu WSL installations
+4. **Confirm installation** - Warns about data loss if upgrading an existing installation
+5. **Install WSL** - Creates a new WSL distribution from the image file
+6. **Auto-provision** - The provisioning script runs automatically on first login to set up your environment
+
 ## What's Included
 
 After installation:
