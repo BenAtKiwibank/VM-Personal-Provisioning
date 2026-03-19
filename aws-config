@@ -14,6 +14,12 @@ sso_account_id = 041371538652
 sso_role_name = CIPUser_pekaraurakauapis
 region = ap-southeast-2
 output = json
+[profile cip-nonprod-party]
+sso_session = cip-nonprod-session
+sso_account_id = 041371538652
+sso_role_name = CIPUser_party
+region = ap-southeast-2
+output = json
 [sso-session cip-nonprod-session]
 sso_start_url = https://kiwibank.awsapps.com/start/#/
 sso_region = ap-southeast-2

@@ -68,6 +68,28 @@ check_running_environment() {
     fi
 }
 
+# Update provisioning repository to latest version
+# NOTE: This updates the Windows-side repository (where this script is located),
+# not any repository inside WSL. The updated scripts will be available to WSL
+# after installation via OneDrive sync or direct access to Windows filesystem.
+update_provisioning_repo() {
+    echo ""
+    echo "Updating provisioning scripts..."
+
+    local repo_dir
+    repo_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+    cd "$repo_dir"
+
+    if git pull 2>/dev/null; then
+        echo -e "${GREEN}Provisioning scripts updated${NC}"
+    else
+        echo -e "${YELLOW}Could not update scripts. Using current version...${NC}"
+    fi
+
+    cd - > /dev/null
+}
+
 # Check if the WSL image exists in Downloads
 check_image_exists() {
     echo ""
@@ -246,8 +268,9 @@ main() {
     echo -e "${BLUE}KB WSL Setup & Update Script${NC}"
     echo "=========================================="
 
-    check_wsl2_available
     check_running_environment
+    update_provisioning_repo
+    check_wsl2_available
     check_image_exists
     confirm_installation
     install_wsl_distribution
