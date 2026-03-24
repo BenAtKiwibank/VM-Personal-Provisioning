@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
-# party-db-auth - Authenticates with Kerberos for Party SDT database access
+# party-sdt - Authenticates with Kerberos for Party SDT database access
 #
 # Usage:
-#   party-db-auth [sit|qas]
+#   party-sdt [sit|qas]
 #
 # Parameters:
 #   environment: Optional. Target environment - 'sit' or 'qas' (default: sit)
@@ -30,13 +30,13 @@
 #   - kinit and klist commands available
 #
 # Examples:
-#   party-db-auth         # Authenticates to SIT (default)
-#   party-db-auth sit     # Authenticates to SIT
-#   party-db-auth qas     # Authenticates to QAS (rehearse)
+#   party-sdt         # Authenticates to SIT (default)
+#   party-sdt sit     # Authenticates to SIT
+#   party-sdt qas     # Authenticates to QAS (rehearse)
 #
 # Returns:
 #   0 on success, 1 on failure
-function party-db-auth() {
+function party-sdt() {
     # Parse environment parameter (default to sit)
     local env="${1:-sit}"
     env=$(echo "$env" | tr '[:upper:]' '[:lower:]')  # Convert to lowercase
@@ -44,7 +44,7 @@ function party-db-auth() {
     # Validate environment
     if [[ ! "$env" =~ ^(sit|qas)$ ]]; then
         echo "Error: Invalid environment '$env'. Use 'sit' or 'qas'"
-        echo "Usage: party-db-auth [sit|qas]"
+        echo "Usage: party-sdt [sit|qas]"
         return 1
     fi
 
@@ -152,7 +152,7 @@ function party-db-auth() {
         klist
         echo ""
         echo -e "${GREEN}[INFO]${NC} You can now connect to ${database} on ${server}"
-        echo -e "${GREEN}[INFO]${NC} Ticket will expire in 24 hours. Run party-db-auth again to renew."
+        echo -e "${GREEN}[INFO]${NC} Ticket will expire in 24 hours. Run party-sdt again to renew."
         return 0
     else
         echo ""
@@ -163,7 +163,7 @@ function party-db-auth() {
 
 # Make function available in both bash and zsh
 if [ -n "$BASH_VERSION" ]; then
-    export -f party-db-auth
+    export -f party-sdt
 elif [ -n "$ZSH_VERSION" ]; then
     # Zsh doesn't need export -f
     :
