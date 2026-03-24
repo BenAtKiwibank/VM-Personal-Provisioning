@@ -56,7 +56,7 @@ NC='\033[0m'         # Always reset after colored text
 
 ## Critical Workflows
 
-**Adding new repositories:** Edit [personal_provisioning.sh](../personal_provisioning.sh#L35-50) `git clone` section
+**Adding new repositories:** Edit [personal_provisioning.sh](../personal_provisioning.sh#L43-L53) `git clone` section
 
 **Modifying AWS profiles:** Edit [config/aws-config](../config/aws-config) before testing changes
 
