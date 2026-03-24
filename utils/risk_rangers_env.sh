@@ -7,3 +7,6 @@ fi
 
 export AWS_REGION=ap-southeast-2
 export PROD_ECR_HOST_NAME="250300400957.dkr.ecr.ap-southeast-2.amazonaws.com"
+
+# Kerberos configuration
+export KRB5_CONFIG="$HOME/vm-personal-provisioning/config/krb5.conf"

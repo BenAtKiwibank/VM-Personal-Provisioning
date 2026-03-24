@@ -26,19 +26,20 @@ Before running the setup script, ensure you have:
 4. **GitHub SSH Keys**
    - Must be configured for your GitHub account
    - Required for automatic repository cloning during provisioning
-   
+
    Generate SSH key:
+
    ```bash
    ssh-keygen -t ed25519 -C "<YOUR_EMAIL>" -f ~/.ssh/id_ed25519 -N ''
    cat ~/.ssh/id_ed25519.pub
    ```
-   
+
    Then:
    - Copy the public key output
    - Go to GitHub Settings → SSH and GPG keys → New SSH key
    - Paste your key and save
    - **Important:** Authorize the key for Kiwibank organization access
-   
+
    Guide: https://docs.github.com/en/authentication/connecting-to-github-with-ssh
 
 5. **Azure DevOps PAT** (Optional)
@@ -90,4 +91,4 @@ After installation:
 - `personal_provisioning.sh` - Auto-runs on first login to set up development environment
 - `tools/` - Installation and configuration scripts
 - `utils/` - Common utility functions and environment configurations
-- `aws-config` - AWS SSO profile configuration
+- `config/` - Configuration files (AWS, Kerberos, etc.)

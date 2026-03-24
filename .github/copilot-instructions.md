@@ -5,6 +5,7 @@ Bash automation for Kiwibank's WSL development environment setup.
 ## Architecture
 
 **Execution Flow:** Windows → WSL → Runtime
+
 - `get-latest-wsl.sh` - Runs from Git Bash on Windows to install/upgrade WSL
 - `personal_provisioning.sh` - Auto-runs inside WSL on first login for environment setup
 - `personal_login.rc` - Sourced by shell on every session for environment/utilities
@@ -14,6 +15,7 @@ Bash automation for Kiwibank's WSL development environment setup.
 ## Bash Script Conventions
 
 **Safety flags (required for all new scripts):**
+
 ```bash
 set -o errexit   # Exit on any error
 set -o pipefail  # Pipe failures propagate
@@ -21,6 +23,7 @@ set -o nounset   # Error on undefined variables
 ```
 
 **Color coding (consistent across all scripts):**
+
 ```bash
 RED='\033[1;31m'     # Errors, critical warnings
 YELLOW='\033[1;33m'  # User prompts, important notices
@@ -30,6 +33,7 @@ NC='\033[0m'         # Always reset after colored text
 ```
 
 **Error handling patterns:**
+
 - Direct command checks: `if ! command; then` (not `$?`)
 - File existence: `[ ! -f "$FILE" ]` before operations
 - User confirmation: `read -r -p "prompt" var` (always use `-r`)
@@ -47,14 +51,14 @@ NC='\033[0m'         # Always reset after colored text
 - `$HOME/vm-personal-provisioning` - This repository (persists across WSL reinstalls via OneDrive)
 - `$HOME/Repos` - Main repositories (`kb-deduction-notices-api`, `kb-rcer-pepss-api`)
 - `$HOME/Repos/infrastructure` - Infrastructure repos (terraform, CI/CD)
-- `$HOME/.aws/config` - AWS SSO profiles (copied from `aws-config`)
+- `$HOME/.aws/config` - AWS SSO profiles (copied from `config/aws-config`)
 - `$HOME/.azure_devops_pat` - Azure DevOps PAT (user creates manually, optional)
 
 ## Critical Workflows
 
 **Adding new repositories:** Edit [personal_provisioning.sh](../personal_provisioning.sh#L35-50) `git clone` section
 
-**Modifying AWS profiles:** Edit [aws-config](../aws-config) before testing changes
+**Modifying AWS profiles:** Edit [config/aws-config](../config/aws-config) before testing changes
 
 **Adding shell utilities:** Add functions to [utils/risk_rangers_functions.sh](../utils/risk_rangers_functions.sh), export them
 

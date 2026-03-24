@@ -20,7 +20,7 @@ sudo swapoff -a
 
 # configure aws
 mkdir -p "$HOME"/.aws
-cp "$PROVISIONING_DIR"/aws-config  "$HOME"/.aws/config
+cp "$PROVISIONING_DIR"/config/aws-config  "$HOME"/.aws/config
 chmod 600 "$HOME"/.aws/config
 
 # install/update tools
