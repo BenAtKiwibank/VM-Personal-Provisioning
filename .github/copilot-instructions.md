@@ -60,7 +60,11 @@ NC='\033[0m'         # Always reset after colored text
 
 **Modifying AWS profiles:** Edit [config/aws-config](../config/aws-config) before testing changes
 
-**Adding shell utilities:** Add functions to [utils/risk_rangers_functions.sh](../utils/risk_rangers_functions.sh), export them
+**Adding shell utilities:** Add functions to the appropriate utils file and export them:
+
+- [utils/docker_utils.sh](../utils/docker_utils.sh) - Docker and ECR authentication
+- [utils/aws_utils.sh](../utils/aws_utils.sh) - AWS authentication and RDS tokens
+- [utils/git_workflow.sh](../utils/git_workflow.sh) - Git branching and Azure DevOps integration
 
 **Changing WSL image location:** Update `IMAGE_PATH` in [get-latest-wsl.sh](../get-latest-wsl.sh)
 
