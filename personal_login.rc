@@ -7,3 +7,5 @@ export REPOS=$HOME/Repos
 for file in "$HOME/vm-personal-provisioning/utils"/*.sh; do
     [ -r "$file" ] && source "$file"
 done
+
+export EDITOR=vim
