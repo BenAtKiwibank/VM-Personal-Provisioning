@@ -83,7 +83,9 @@ After installation:
 
 - AWS SSO configured profiles
 - Development tools (Oh My Zsh, Python, Node, etc.)
-- Git workflow utilities
+- Shell utility functions for AWS, Git, Docker, and database access
+
+📖 **Utility functions documentation:** See [utils/README.md](utils/README.md)
 
 ## Repository Structure
 
