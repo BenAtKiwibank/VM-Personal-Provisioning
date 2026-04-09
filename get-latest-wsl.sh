@@ -18,7 +18,7 @@ IMAGE_PATH="$HOME/Downloads/$IMAGE_NAME"
 
 # Function to get WSL distribution name and clean it
 get_kb_distro() {
-    wsl.exe --list --quiet | iconv -f UTF-16LE -t UTF-8 | grep -i "kb-ubuntu" | head -1 | tr -d '\r\n' | xargs
+    wsl.exe --list --quiet | iconv -f UTF-16LE -t UTF-8 | grep -i "kb-ubuntu" | head -1 | tr -d '\r\n' | xargs || true
 }
 
 # Check if WSL 2 is installed and available
@@ -163,7 +163,7 @@ check_image_exists() {
 confirm_installation() {
     echo ""
     echo "Current WSL distributions:"
-    wsl.exe --list --verbose
+    wsl.exe --list --verbose || true
 
     local existing_distro
     existing_distro=$(get_kb_distro)
