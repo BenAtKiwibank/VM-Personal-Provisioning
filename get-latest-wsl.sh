@@ -186,6 +186,9 @@ confirm_installation() {
         echo "No existing KB Ubuntu installation found."
         echo ""
         echo "Ready to install new WSL distribution."
+        echo ""
+        echo "Proceeding with installation..."
+        return  # Auto-proceed for fresh installation
     fi
     echo ""
     read -r -p "Continue with installation? (yes/no): " confirmation
