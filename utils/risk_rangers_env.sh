@@ -2,6 +2,7 @@
 
 # Source sensitive Azure DevOps PAT from home directory (not in git)
 if [ -f "$HOME/.azure_devops_pat" ]; then
+    # shellcheck source=/dev/null
     source "$HOME/.azure_devops_pat"
 fi
 

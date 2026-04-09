@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
-# party-sdt - Authenticates with Kerberos for Party SDT database access
+# party_sdt - Authenticates with Kerberos for Party SDT database access
 #
 # Usage:
-#   party-sdt [sit|qas]
+#   party_sdt [sit|qas]
 #
 # Parameters:
 #   environment: Optional. Target environment - 'sit' or 'qas' (default: sit)
@@ -30,13 +30,13 @@
 #   - kinit and klist commands available
 #
 # Examples:
-#   party-sdt         # Authenticates to SIT (default)
-#   party-sdt sit     # Authenticates to SIT
-#   party-sdt qas     # Authenticates to QAS (rehearse)
+#   party_sdt         # Authenticates to SIT (default)
+#   party_sdt sit     # Authenticates to SIT
+#   party_sdt qas     # Authenticates to QAS (rehearse)
 #
 # Returns:
 #   0 on success, 1 on failure
-function party-sdt() {
+function party_sdt() {
     # Parse environment parameter (default to sit)
     local env="${1:-sit}"
     env=$(echo "$env" | tr '[:upper:]' '[:lower:]')  # Convert to lowercase
@@ -44,7 +44,7 @@ function party-sdt() {
     # Validate environment
     if [[ ! "$env" =~ ^(sit|qas)$ ]]; then
         echo "Error: Invalid environment '$env'. Use 'sit' or 'qas'"
-        echo "Usage: party-sdt [sit|qas]"
+        echo "Usage: party_sdt [sit|qas]"
         return 1
     fi
 
@@ -82,7 +82,8 @@ function party-sdt() {
             ;;
     esac
 
-    local env_upper=$(echo "$env" | tr '[:lower:]' '[:upper:]')
+    local env_upper
+    env_upper=$(echo "$env" | tr '[:lower:]' '[:upper:]')
 
     echo -e "${GREEN}[INFO]${NC} Target environment: ${env_upper}"
     echo -e "${GREEN}[INFO]${NC} Database server: ${server}"
@@ -152,7 +153,7 @@ function party-sdt() {
         klist
         echo ""
         echo -e "${GREEN}[INFO]${NC} You can now connect to ${database} on ${server}"
-        echo -e "${GREEN}[INFO]${NC} Ticket will expire in 24 hours. Run party-sdt again to renew."
+        echo -e "${GREEN}[INFO]${NC} Ticket will expire in 24 hours. Run party_sdt again to renew."
         return 0
     else
         echo ""
@@ -163,7 +164,7 @@ function party-sdt() {
 
 # Make function available in both bash and zsh
 if [ -n "$BASH_VERSION" ]; then
-    export -f party-sdt
+    export -f party_sdt
 elif [ -n "$ZSH_VERSION" ]; then
     # Zsh doesn't need export -f
     :
