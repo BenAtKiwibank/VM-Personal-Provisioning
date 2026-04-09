@@ -10,6 +10,11 @@ done
 
 export EDITOR=vim
 
+# SSL/Certificate workaround for corporate environments with SSL inspection
+# Required for Azure CLI and Python tools to work behind corporate proxies
+export PYTHONHTTPSVERIFY=0
+export AZURE_CLI_DISABLE_CONNECTION_VERIFICATION=1
+
 # Configure AWS CLI to use Windows browser when running in WSL
 if grep -qi microsoft /proc/version 2>/dev/null; then
     export AWS_BROWSER=wslview

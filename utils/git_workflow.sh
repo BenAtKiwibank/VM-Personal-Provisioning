@@ -122,6 +122,24 @@ function new_branch() {
         return 1
     fi
 
+    # Check if Azure CLI is installed
+    if ! command -v az >/dev/null 2>&1; then
+        echo "Error: Azure CLI (az) is not installed"
+        return 1
+    fi
+
+    # Check if azure-devops extension is installed
+    if ! az extension list --query "[?name=='azure-devops'].name" -o tsv | grep -q azure-devops; then
+        echo "Error: Azure DevOps extension is not installed"
+        echo ""
+        echo "Run these commands to install it:"
+        echo "  source ~/vm-personal-provisioning/personal_login.rc"
+        echo "  az extension add --name azure-devops"
+        echo ""
+        echo "Note: The SSL workaround is already configured in your environment."
+        return 1
+    fi
+
     # Check if we're in a git repository
     if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
         echo "Error: Not in a git repository"

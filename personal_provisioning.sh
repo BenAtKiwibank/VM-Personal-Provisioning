@@ -36,6 +36,18 @@ pipx ensurepath
 # Add pipx binaries to PATH for the current session
 export PATH="$HOME/.local/bin:$PATH"
 
+# Install Azure DevOps extension for Azure CLI
+# SSL verification must be disabled for corporate environments with SSL inspection
+if command -v az >/dev/null 2>&1; then
+    echo "Installing Azure DevOps extension for Azure CLI..."
+    export PYTHONHTTPSVERIFY=0
+    export AZURE_CLI_DISABLE_CONNECTION_VERIFICATION=1
+    az extension add --name azure-devops || echo "Warning: Failed to install azure-devops extension. You can install it manually later."
+else
+    echo "Azure CLI not found. Skipping azure-devops extension installation."
+    echo "Install Azure CLI first if you need Azure DevOps integration."
+fi
+
 # Clear dotnet tool cache and install dotnet-ef
 sudo dotnet workload update
 dotnet nuget locals all --clear
