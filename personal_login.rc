@@ -9,3 +9,8 @@ for file in "$HOME/vm-personal-provisioning/utils"/*.sh; do
 done
 
 export EDITOR=vim
+
+# Configure AWS CLI to use Windows browser when running in WSL
+if grep -qi microsoft /proc/version 2>/dev/null; then
+    export AWS_BROWSER=wslview
+fi

@@ -29,7 +29,8 @@ sudo apt autoremove -y
 sudo apt autoclean
 
 # Install pre-commit using pipx (recommended for Python CLI tools)
-sudo apt install -y pipx
+# Install wslu for WSL-Windows browser integration (provides wslview command)
+sudo apt install -y pipx wslu
 pipx install pre-commit
 pipx ensurepath
 # Add pipx binaries to PATH for the current session
