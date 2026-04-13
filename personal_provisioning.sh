@@ -82,6 +82,7 @@ pre-commit install --hook-type commit-msg
 pre-commit install --hook-type pre-push
 
 cd "$REPOS"/kb-party-api
+pre-commit install
 pre-commit install --hook-type commit-msg
 
 # install oh-my-zsh and apply custom configuration
