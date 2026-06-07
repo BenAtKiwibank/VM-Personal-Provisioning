@@ -18,7 +18,7 @@ IMAGE_PATH="$HOME/Downloads/$IMAGE_NAME"
 
 # Function to get WSL distribution name and clean it
 get_kb_distro() {
-    wsl.exe --list --quiet | iconv -f UTF-16LE -t UTF-8 | grep -i "kb-ubuntu" | head -1 | tr -d '\r\n' | xargs || true
+    wsl --list --quiet | iconv -f UTF-16LE -t UTF-8 | grep -i "kb-ubuntu" | head -1 | tr -d '\r\n' | xargs || true
 }
 
 # Check if WSL 2 is installed and available
@@ -26,7 +26,7 @@ check_wsl2_available() {
     echo ""
     echo "Checking WSL installation..."
 
-    if ! command -v wsl.exe &> /dev/null; then
+    if ! command -v wsl &> /dev/null; then
         echo -e "${RED}Error: WSL is not installed${NC}"
         echo ""
         echo "Please install WSL 2 first:"
@@ -39,7 +39,7 @@ check_wsl2_available() {
 
     # Check if WSL 2 is available
     local wsl_status
-    wsl_status=$(wsl.exe --status 2>&1 || echo "")
+    wsl_status=$(wsl --status 2>&1 || echo "")
 
     if ! echo "$wsl_status" | grep -q "Default Version: 2"; then
         echo -e "${YELLOW}Warning: WSL 2 is not set as the default version${NC}"
@@ -163,7 +163,7 @@ check_image_exists() {
 confirm_installation() {
     echo ""
     echo "Current WSL distributions:"
-    wsl.exe --list --verbose || true
+    wsl --list --verbose || true
 
     local existing_distro
     existing_distro=$(get_kb_distro)
@@ -203,7 +203,7 @@ confirm_installation() {
     if [ -n "$existing_distro" ]; then
         echo ""
         echo "Unregistering existing distribution: $existing_distro"
-        if ! wsl.exe --unregister "$existing_distro"; then
+        if ! wsl --unregister "$existing_distro"; then
             echo ""
             echo -e "${RED}Error: Failed to unregister existing distribution${NC}"
             exit 1
@@ -221,7 +221,7 @@ install_wsl_distribution() {
     echo "This may take several minutes..."
     echo ""
 
-    if ! wsl.exe --install --from-file "$IMAGE_PATH"; then
+    if ! wsl --install --from-file "$IMAGE_PATH"; then
         echo ""
         echo -e "${RED}Error: Failed to install distribution${NC}"
         exit 1
@@ -231,7 +231,7 @@ install_wsl_distribution() {
     echo -e "${GREEN}WSL distribution installed successfully!${NC}"
     echo ""
     echo "Current WSL distributions:"
-    wsl.exe --list --verbose
+    wsl --list --verbose
 }
 
 # Finalize setup

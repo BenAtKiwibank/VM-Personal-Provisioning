@@ -29,8 +29,7 @@ sudo apt autoremove -y
 sudo apt autoclean
 
 # Install pre-commit using pipx (recommended for Python CLI tools)
-# Install wslu for WSL-Windows browser integration (provides wslview command)
-sudo apt install -y pipx wslu
+sudo apt install -y pipx nodejs npm
 pipx install pre-commit
 pipx ensurepath
 # Add pipx binaries to PATH for the current session
@@ -57,7 +56,7 @@ dotnet tool install --global dotnet-ef --version 9.0.0
 mkdir -p "$REPOS"
 git config --global core.longpaths true
 git config --global push.autoSetupRemote true
-# make sure your ssh keys are set up in github
+# make sure your ssh keys are set up in github and AUTHORIZED for the Kiwibank organization
 cd "$REPOS"
 git clone git@github.com:Kiwibank/kb-deduction-notices-api.git
 git clone git@github.com:Kiwibank/kb-rcer-pepss-api.git
