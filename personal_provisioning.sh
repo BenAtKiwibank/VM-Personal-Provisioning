@@ -23,6 +23,10 @@ mkdir -p "$HOME"/.aws
 cp "$PROVISIONING_DIR"/config/aws-config  "$HOME"/.aws/config
 chmod 600 "$HOME"/.aws/config
 
+# configure nuget
+mkdir -p "$HOME"/.nuget/NuGet
+cp "$PROVISIONING_DIR"/NuGet.Config "$HOME"/.nuget/NuGet/NuGet.Config
+
 # install/update tools
 sudo apt update && sudo apt upgrade -y
 sudo apt autoremove -y
